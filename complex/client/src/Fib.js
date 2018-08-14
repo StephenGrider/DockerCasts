@@ -3,43 +3,44 @@ import axios from 'axios';
 
 class Fib extends Component {
   state = {
-    seenIndicies: [],
-    values: [],
-    value: ''
+    seenIndexes: [],
+    values: {},
+    index: ''
   };
 
   componentDidMount() {
     this.fetchValues();
-    this.fetchIndices();
+    this.fetchIndexes();
   }
 
   async fetchValues() {
     const values = await axios.get('/api/values/current');
-    this.setState({ values: values.date });
+    this.setState({ values: values.data });
   }
 
-  async fetchIndicies() {
-    const seenIndicies = await axios.get('/api/values/all');
+  async fetchIndexes() {
+    const seenIndexes = await axios.get('/api/values/all');
     this.setState({
-      seenIndicies: seenIndicies.data
+      seenIndexes: seenIndexes.data
     });
   }
 
   handleSubmit = async event => {
     event.preventDefault();
 
-    await axios.post('/api/value', {
-      index: this.state.value
+    await axios.post('/api/values', {
+      index: this.state.index
     });
-    this.setState({ value: '' });
+    this.setState({ index: '' });
   };
 
-  renderSeenIndicies() {
-    return this.state.seenIndicies.map(({ number }) => number).join(', ');
+  renderSeenIndexes() {
+    return this.state.seenIndexes.map(({ number }) => number).join(', ');
   }
 
   renderValues() {
     const entries = [];
+
     for (let key in this.state.values) {
       entries.push(
         <div key={key}>
@@ -57,14 +58,14 @@ class Fib extends Component {
         <form onSubmit={this.handleSubmit}>
           <label>Enter your index:</label>
           <input
-            value={this.state.value}
-            onChange={event => this.setState({ value: event.target.value })}
+            value={this.state.index}
+            onChange={event => this.setState({ index: event.target.value })}
           />
           <button>Submit</button>
         </form>
 
-        <h3>Indicies I have seen:</h3>
-        {this.renderSeenIndicies()}
+        <h3>Indexes I have seen:</h3>
+        {this.renderSeenIndexes()}
 
         <h3>Calculated Values:</h3>
         {this.renderValues()}
