@@ -1,0 +1,10 @@
+version: '3'
+services:
+  client_tests:
+    command: ['nodemon', '--exec', 'npm', 'test']
+    build:
+      dockerfile: ./client/Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - .:/app
